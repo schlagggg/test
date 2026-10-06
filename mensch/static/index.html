@@ -4,126 +4,170 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mensch AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand"><span class="logo">M</span> Mensch AI</div>
-    <div class="who">
-      <span id="llm-badge" class="badge muted" title="Answer synthesis mode"></span>
-      <label for="user-select">Signed in as</label>
-      <select id="user-select"></select>
-    </div>
-  </header>
-  <div class="layout">
-    <nav class="sidebar">
-      <button data-view="ask" class="active">Ask</button>
-      <button data-view="inbox">Inbox <span id="inbox-count" class="count hidden"></span></button>
-      <button data-view="notes">My private notes</button>
-      <button data-view="experts">Who knows what</button>
-      <button data-view="memory">Company memory</button>
-      <button data-view="profile">Profile &amp; team</button>
+  <aside class="sidebar">
+    <div class="brand"><span class="mark">M</span><span>Mensch</span></div>
+    <nav>
+      <button data-view="ask" class="active">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask
+      </button>
+      <button data-view="inbox">
+        <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Inbox<span id="inbox-count" class="count hidden"></span>
+      </button>
+      <button data-view="notes">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Private notes
+      </button>
+      <button data-view="experts">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Who knows what
+      </button>
+      <button data-view="memory">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Company memory
+      </button>
+      <button data-view="profile">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Profile &amp; team
+      </button>
     </nav>
-    <main>
-      <section id="view-ask" class="view">
-        <h1>Ask anything about how things work here</h1>
-        <p class="hint">Mensch AI checks company memory and colleagues' private workflow notes. If it can't answer, it finds the colleague who knows and asks them for you.</p>
-        <form id="ask-form" class="card ask-card">
-          <textarea id="ask-input" rows="2" placeholder="e.g. How do I get my travel expenses reimbursed?" required minlength="3"></textarea>
-          <div class="row">
-            <div class="suggestions" id="suggestions"></div>
-            <button type="submit" class="primary">Ask</button>
-          </div>
-        </form>
-        <h2>My questions</h2>
-        <div id="questions"></div>
-      </section>
+    <div class="me">
+      <div id="me-avatar" class="avatar"></div>
+      <div class="me-text">
+        <div id="me-name"></div>
+        <div id="me-title" class="me-title"></div>
+      </div>
+      <svg class="me-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
+      <select id="user-select" title="Switch user (demo)"></select>
+    </div>
+  </aside>
 
-      <section id="view-inbox" class="view hidden">
+  <main>
+    <!-- ASK -->
+    <section id="view-ask" class="view ask-view">
+      <div id="ask-empty" class="hero hidden">
+        <div class="hero-mark">M</div>
+        <h1>What do you need to know?</h1>
+        <p>I search company memory and colleagues' private notes. If nobody wrote it down, I'll find the person who knows and ask them for you.</p>
+      </div>
+      <div id="thread" class="thread"></div>
+      <div class="composer-wrap">
+        <div id="suggestions" class="suggestions"></div>
+        <form id="ask-form" class="composer">
+          <textarea id="ask-input" rows="1" placeholder="Ask anything about how things work here…" required minlength="3"></textarea>
+          <button type="submit" class="send" title="Ask">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+        <div class="composer-hint"><span id="llm-badge"></span></div>
+      </div>
+    </section>
+
+    <!-- INBOX -->
+    <section id="view-inbox" class="view page hidden">
+      <header class="page-head">
         <h1>Inbox</h1>
-        <p class="hint">Questions the agent routed to you because it thinks you know the answer. Your answer goes back to the asker and is remembered so you won't be asked again.</p>
-        <div id="inbox"></div>
-      </section>
+        <p>Questions Mensch routed to you because you're the likely expert. Your answer goes to the asker and is remembered, so you won't be asked twice.</p>
+      </header>
+      <div id="inbox" class="stack"></div>
+    </section>
 
-      <section id="view-notes" class="view hidden">
-        <h1>My private notes</h1>
-        <p class="private-banner">Only you and the agent can read these. Others only see short, relevant excerpts when the agent uses them to answer a question.</p>
-        <div class="notes-layout">
-          <div class="notes-list">
-            <button id="new-note" class="primary block">+ New note</button>
-            <ul id="notes-list"></ul>
-          </div>
-          <form id="note-form" class="card note-editor">
-            <input id="note-title" placeholder="Title, e.g. How I run payroll" required />
-            <textarea id="note-body" rows="14" placeholder="Write down your workflows, steps, links, gotchas..."></textarea>
-            <div class="row end">
-              <button type="button" id="delete-note" class="danger hidden">Delete</button>
-              <button type="submit" class="primary">Save</button>
+    <!-- NOTES -->
+    <section id="view-notes" class="view page wide hidden">
+      <header class="page-head">
+        <h1>Private notes</h1>
+        <p class="lock-line"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Only you and Mensch can read these. Colleagues only ever see short, relevant excerpts in answers.</p>
+      </header>
+      <div class="notes-layout">
+        <div class="notes-list">
+          <button id="new-note" class="btn primary block">New note</button>
+          <ul id="notes-list"></ul>
+        </div>
+        <form id="note-form" class="note-editor">
+          <input id="note-title" placeholder="Untitled" required />
+          <textarea id="note-body" placeholder="Write down how you do things — steps, links, gotchas, who to ask…"></textarea>
+          <div class="editor-bar">
+            <span class="muted small" id="note-status"></span>
+            <div class="row">
+              <button type="button" id="delete-note" class="btn ghost danger hidden">Delete</button>
+              <button type="submit" class="btn primary">Save</button>
             </div>
-          </form>
-        </div>
-      </section>
+          </div>
+        </form>
+      </div>
+    </section>
 
-      <section id="view-experts" class="view hidden">
+    <!-- EXPERTS -->
+    <section id="view-experts" class="view page wide hidden">
+      <header class="page-head">
         <h1>Who knows what</h1>
-        <form id="expert-form" class="card row">
-          <input id="expert-input" placeholder="Who knows about... (e.g. kubernetes, parental leave, discounts)" required />
-          <button class="primary">Find people</button>
-        </form>
-        <div id="expert-results"></div>
-        <h2>Topics</h2>
-        <div id="topic-cloud" class="chips"></div>
-        <h2>People</h2>
-        <div id="people" class="grid"></div>
-      </section>
+        <p>Built from people's skills, the questions they've answered and what they keep notes on.</p>
+      </header>
+      <form id="expert-form" class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="expert-input" placeholder="Who knows about… kubernetes, parental leave, discounts" required />
+        <button class="btn primary">Find</button>
+      </form>
+      <div id="expert-results" class="stack"></div>
+      <h2 class="section-title">Popular topics</h2>
+      <div id="topic-cloud" class="chips"></div>
+      <h2 class="section-title">People</h2>
+      <div id="people" class="grid"></div>
+    </section>
 
-      <section id="view-memory" class="view hidden">
+    <!-- MEMORY -->
+    <section id="view-memory" class="view page wide hidden">
+      <header class="page-head">
         <h1>Company memory</h1>
-        <p class="hint">Questions colleagues have asked each other and their answers. The agent learns from chats, from expert answers, and from entries added here.</p>
-        <div class="grid two">
-          <form id="memory-form" class="card">
-            <h3>Add a Q&amp;A</h3>
-            <input id="mem-q" placeholder="Question" required minlength="3" />
-            <textarea id="mem-a" rows="3" placeholder="Answer" required></textarea>
-            <input id="mem-p" placeholder="Where to find more (link, folder, channel) — optional" />
-            <button class="primary">Remember</button>
-          </form>
-          <form id="chat-form" class="card">
-            <h3>Learn from a chat log</h3>
-            <textarea id="chat-text" rows="6" placeholder="Paste a Slack/Teams export, one message per line:&#10;[09:12] Emma: how do I get a new monitor?&#10;[09:14] Ben: open an IT portal ticket"></textarea>
-            <button class="primary">Extract Q&amp;A</button>
-            <div id="chat-result" class="hint"></div>
-          </form>
-        </div>
-        <form id="memory-search" class="row card">
-          <input id="memory-q" placeholder="Search memory..." />
-          <button>Search</button>
+        <p>Everything colleagues have asked each other. Mensch learns from chats, expert answers and entries added here.</p>
+      </header>
+      <div class="grid two">
+        <form id="memory-form" class="card form">
+          <h3>Add a Q&amp;A</h3>
+          <input id="mem-q" placeholder="Question" required minlength="3" />
+          <textarea id="mem-a" rows="3" placeholder="Answer" required></textarea>
+          <input id="mem-p" placeholder="Where to find more (optional)" />
+          <button class="btn primary">Remember</button>
         </form>
-        <div id="memory-list"></div>
-      </section>
+        <form id="chat-form" class="card form">
+          <h3>Learn from a chat log</h3>
+          <textarea id="chat-text" rows="5" placeholder="Paste a Slack/Teams export:&#10;[09:12] Emma: how do I get a new monitor?&#10;[09:14] Ben: open an IT portal ticket"></textarea>
+          <button class="btn primary">Extract Q&amp;A</button>
+          <div id="chat-result" class="muted small"></div>
+        </form>
+      </div>
+      <form id="memory-search" class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="memory-q" placeholder="Search memory…" />
+        <button class="btn">Search</button>
+      </form>
+      <div id="memory-list" class="stack"></div>
+    </section>
 
-      <section id="view-profile" class="view hidden">
+    <!-- PROFILE -->
+    <section id="view-profile" class="view page hidden">
+      <header class="page-head">
         <h1>Profile &amp; team</h1>
-        <div class="grid two">
-          <form id="skills-form" class="card">
-            <h3>My skills</h3>
-            <p class="hint">Help the agent route the right questions to you.</p>
-            <input id="skills-input" placeholder="comma separated, e.g. payroll, okta, hiring" />
-            <button class="primary">Save skills</button>
-          </form>
-          <form id="employee-form" class="card">
-            <h3>Add a teammate</h3>
-            <input id="emp-name" placeholder="Name" required />
-            <input id="emp-email" placeholder="Email" required />
-            <input id="emp-title" placeholder="Title" />
-            <input id="emp-team" placeholder="Team" />
-            <input id="emp-skills" placeholder="Skills (comma separated)" />
-            <button class="primary">Add</button>
-          </form>
+        <p>Your skills help Mensch route the right questions to you.</p>
+      </header>
+      <form id="skills-form" class="card form">
+        <h3>My skills</h3>
+        <input id="skills-input" placeholder="Comma separated — e.g. payroll, okta, hiring" />
+        <button class="btn primary">Save skills</button>
+      </form>
+      <form id="employee-form" class="card form">
+        <h3>Add a teammate</h3>
+        <div class="grid two tight">
+          <input id="emp-name" placeholder="Name" required />
+          <input id="emp-email" placeholder="Email" required />
+          <input id="emp-title" placeholder="Title" />
+          <input id="emp-team" placeholder="Team" />
         </div>
-      </section>
-    </main>
-  </div>
+        <input id="emp-skills" placeholder="Skills (comma separated)" />
+        <button class="btn primary">Add teammate</button>
+      </form>
+    </section>
+  </main>
   <div id="toast" class="toast hidden"></div>
   <script src="/static/app.js"></script>
 </body>
