@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mensch AI</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">M</span> Mensch AI</div>
+    <div class="who">
+      <span id="llm-badge" class="badge muted" title="Answer synthesis mode"></span>
+      <label for="user-select">Signed in as</label>
+      <select id="user-select"></select>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar">
+      <button data-view="ask" class="active">Ask</button>
+      <button data-view="inbox">Inbox <span id="inbox-count" class="count hidden"></span></button>
+      <button data-view="notes">My private notes</button>
+      <button data-view="experts">Who knows what</button>
+      <button data-view="memory">Company memory</button>
+      <button data-view="profile">Profile &amp; team</button>
+    </nav>
+    <main>
+      <section id="view-ask" class="view">
+        <h1>Ask anything about how things work here</h1>
+        <p class="hint">Mensch AI checks company memory and colleagues' private workflow notes. If it can't answer, it finds the colleague who knows and asks them for you.</p>
+        <form id="ask-form" class="card ask-card">
+          <textarea id="ask-input" rows="2" placeholder="e.g. How do I get my travel expenses reimbursed?" required minlength="3"></textarea>
+          <div class="row">
+            <div class="suggestions" id="suggestions"></div>
+            <button type="submit" class="primary">Ask</button>
+          </div>
+        </form>
+        <h2>My questions</h2>
+        <div id="questions"></div>
+      </section>
+
+      <section id="view-inbox" class="view hidden">
+        <h1>Inbox</h1>
+        <p class="hint">Questions the agent routed to you because it thinks you know the answer. Your answer goes back to the asker and is remembered so you won't be asked again.</p>
+        <div id="inbox"></div>
+      </section>
+
+      <section id="view-notes" class="view hidden">
+        <h1>My private notes</h1>
+        <p class="private-banner">Only you and the agent can read these. Others only see short, relevant excerpts when the agent uses them to answer a question.</p>
+        <div class="notes-layout">
+          <div class="notes-list">
+            <button id="new-note" class="primary block">+ New note</button>
+            <ul id="notes-list"></ul>
+          </div>
+          <form id="note-form" class="card note-editor">
+            <input id="note-title" placeholder="Title, e.g. How I run payroll" required />
+            <textarea id="note-body" rows="14" placeholder="Write down your workflows, steps, links, gotchas..."></textarea>
+            <div class="row end">
+              <button type="button" id="delete-note" class="danger hidden">Delete</button>
+              <button type="submit" class="primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-experts" class="view hidden">
+        <h1>Who knows what</h1>
+        <form id="expert-form" class="card row">
+          <input id="expert-input" placeholder="Who knows about... (e.g. kubernetes, parental leave, discounts)" required />
+          <button class="primary">Find people</button>
+        </form>
+        <div id="expert-results"></div>
+        <h2>Topics</h2>
+        <div id="topic-cloud" class="chips"></div>
+        <h2>People</h2>
+        <div id="people" class="grid"></div>
+      </section>
+
+      <section id="view-memory" class="view hidden">
+        <h1>Company memory</h1>
+        <p class="hint">Questions colleagues have asked each other and their answers. The agent learns from chats, from expert answers, and from entries added here.</p>
+        <div class="grid two">
+          <form id="memory-form" class="card">
+            <h3>Add a Q&amp;A</h3>
+            <input id="mem-q" placeholder="Question" required minlength="3" />
+            <textarea id="mem-a" rows="3" placeholder="Answer" required></textarea>
+            <input id="mem-p" placeholder="Where to find more (link, folder, channel) — optional" />
+            <button class="primary">Remember</button>
+          </form>
+          <form id="chat-form" class="card">
+            <h3>Learn from a chat log</h3>
+            <textarea id="chat-text" rows="6" placeholder="Paste a Slack/Teams export, one message per line:&#10;[09:12] Emma: how do I get a new monitor?&#10;[09:14] Ben: open an IT portal ticket"></textarea>
+            <button class="primary">Extract Q&amp;A</button>
+            <div id="chat-result" class="hint"></div>
+          </form>
+        </div>
+        <form id="memory-search" class="row card">
+          <input id="memory-q" placeholder="Search memory..." />
+          <button>Search</button>
+        </form>
+        <div id="memory-list"></div>
+      </section>
+
+      <section id="view-profile" class="view hidden">
+        <h1>Profile &amp; team</h1>
+        <div class="grid two">
+          <form id="skills-form" class="card">
+            <h3>My skills</h3>
+            <p class="hint">Help the agent route the right questions to you.</p>
+            <input id="skills-input" placeholder="comma separated, e.g. payroll, okta, hiring" />
+            <button class="primary">Save skills</button>
+          </form>
+          <form id="employee-form" class="card">
+            <h3>Add a teammate</h3>
+            <input id="emp-name" placeholder="Name" required />
+            <input id="emp-email" placeholder="Email" required />
+            <input id="emp-title" placeholder="Title" />
+            <input id="emp-team" placeholder="Team" />
+            <input id="emp-skills" placeholder="Skills (comma separated)" />
+            <button class="primary">Add</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
